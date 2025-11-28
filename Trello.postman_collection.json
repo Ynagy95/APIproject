@@ -1,0 +1,4272 @@
+{
+	"info": {
+		"_postman_id": "8eb251f1-ea0a-4c37-83d8-61f36e969224",
+		"name": "Trello",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27805236"
+	},
+	"item": [
+		{
+			"name": "Create List before board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid value for idBoard\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists?name=my list&idBoard={{Board id}}&key={{key}}&token={{token}}&color=green",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "my list"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{Board id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "color",
+							"value": "green"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Board without a name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Board response properties\", function () {\r",
+							"    pm.expect(response.message).to.exist;\r",
+							"    pm.expect(response.error).to.exist;\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"pm.test(\"message is correct\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"invalid value for name\");\r",
+							"});\r",
+							"pm.test(\"error is correct\", function () {\r",
+							"    pm.expect(response.error).to.eql(\"ERROR\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"   \r",
+							"\r",
+							"    pm.expect(response.message).to.be.a('string');\r",
+							"    pm.expect(response.error).to.be.a('string');\r",
+							"    \r",
+							"   \r",
+							"});\r",
+							"\r",
+							"\r",
+							" \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/?name=&key={{key}}&token={{token}}&desc=we are making boards for our Iti project",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": ""
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "desc",
+							"value": "we are making boards for our Iti project"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/boards/?name={name}&key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Board id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Board created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.desc).to.exist;\r",
+							"});\r",
+							"pm.test(\"Board name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"ITI\");\r",
+							"});\r",
+							"pm.test(\"Board description is correct\", function () {\r",
+							"    pm.expect(response.desc).to.eql(\"we are making boards for our Iti project\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'desc', 'descData', 'closed','idOrganization','idEnterprise','pinned','url','shortUrl','prefs','labelNames','limits');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"   \r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.descData).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idOrganization).to.be.a('string');\r",
+							"    pm.expect(response.idEnterprise).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.pinned).to.be.a('boolean');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"    pm.expect(response.prefs).to.be.an('object');\r",
+							"    pm.expect(response.labelNames).to.be.an('object');\r",
+							"    pm.expect(response.limits).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"\r",
+							" \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/?name=ITI&key={{key}}&token={{token}}&desc=we are making boards for our Iti project",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "ITI"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "desc",
+							"value": "we are making boards for our Iti project"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Board created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.desc).to.exist;\r",
+							"});\r",
+							"pm.test(\"Board name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"ITI\");\r",
+							"});\r",
+							"pm.test(\"Board description is correct\", function () {\r",
+							"    pm.expect(response.desc).to.eql(\"we are making boards for our Iti project\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Board descData is correct\", function () {\r",
+							"    pm.expect(response.descData).to.eql(null);\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'desc', 'descData', 'closed','idOrganization','idEnterprise','pinned','url','shortUrl','prefs','labelNames');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"   \r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.descData).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idOrganization).to.be.a('string');\r",
+							"    pm.expect(response.idEnterprise).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.pinned).to.be.a('boolean');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"    pm.expect(response.prefs).to.be.an('object');\r",
+							"    pm.expect(response.labelNames).to.be.an('object');\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							" \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/{{Board id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{Board id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/boards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Board updated successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.desc).to.exist;\r",
+							"});\r",
+							"pm.test(\"Board name is updated correctely\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"ITI1\");\r",
+							"});\r",
+							"pm.test(\"Board description is correct\", function () {\r",
+							"    pm.expect(response.desc).to.eql(\"we are making boards for our Iti project\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Board descData is correct\", function () {\r",
+							"    pm.expect(response.descData).to.eql(null);\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'desc', 'descData', 'closed','idOrganization','idEnterprise','pinned','url','shortUrl','prefs','labelNames');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"   \r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.descData).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idOrganization).to.be.a('string');\r",
+							"    pm.expect(response.idEnterprise).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.pinned).to.be.a('boolean');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"    pm.expect(response.prefs).to.be.an('object');\r",
+							"    pm.expect(response.labelNames).to.be.an('object');\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							" \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/{{Board id}}?key={{key}}&token={{token}}&name=ITI1",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{Board id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "ITI1"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/boards/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Board after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Board updated successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.desc).to.exist;\r",
+							"});\r",
+							"pm.test(\"Board name is updated correctely\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"ITI1\");\r",
+							"});\r",
+							"pm.test(\"Board description is correct\", function () {\r",
+							"    pm.expect(response.desc).to.eql(\"we are making boards for our Iti project\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Board descData is correct\", function () {\r",
+							"    pm.expect(response.descData).to.eql(null);\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'desc', 'descData', 'closed','idOrganization','idEnterprise','pinned','url','shortUrl','prefs','labelNames');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"   \r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.descData).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idOrganization).to.be.a('string');\r",
+							"    pm.expect(response.idEnterprise).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.pinned).to.be.a('boolean');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"    pm.expect(response.prefs).to.be.an('object');\r",
+							"    pm.expect(response.labelNames).to.be.an('object');\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							" \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/{{Board id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{Board id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/boards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Card before list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid value for idList\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards?idList={{List id}}&key={{key}}&token={{token}}&name=كارت&desc=يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{List id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "كارت"
+						},
+						{
+							"key": "desc",
+							"value": "يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400)."
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create List without a name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid value for name\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists?name=&idBoard={{Board id}}&key={{key}}&token={{token}}&color=green",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": ""
+						},
+						{
+							"key": "idBoard",
+							"value": "{{Board id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "color",
+							"value": "green"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create List with unkown parameter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"List id\", response.id);\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"my list\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'closed', 'color', 'idBoard','pos','type','datasource','limits');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.satisfy(val => val === false && typeof val === 'boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"    pm.expect(response.limits).to.be.an('object');\r",
+							"});\r",
+							"pm.test(\"Checklist belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists?name=my list&idBoard={{Board id}}&key={{key}}&token={{token}}&color=green&width%26height=600",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "my list"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{Board id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "color",
+							"value": "green"
+						},
+						{
+							"key": "width%26height",
+							"value": "600"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"List id\", response.id);\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"my list\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'closed', 'color', 'idBoard','pos','type','datasource','limits');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"    pm.expect(response.limits).to.be.an('object');\r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists?name=my list&idBoard={{Board id}}&key={{key}}&token={{token}}&color=green",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "my list"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{Board id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "color",
+							"value": "green"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/lists?name={name}&idBoard=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List retrieved successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"my list\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'closed', 'color', 'idBoard','pos','type','datasource');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/lists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Update List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.all.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}?key={{key}}&token={{token}}&name=newlist",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "newlist"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/lists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get List after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"List id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.include.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/lists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Archive a list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.include.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"\r",
+							"\r",
+							"  pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}/closed?key={{key}}&token={{token}}&value=true",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}",
+						"closed"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "value",
+							"value": "true"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/lists/{id}/closed?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get List after archive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.include.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/lists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "unarchive a list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.include.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}/closed?key={{key}}&token={{token}}&value=false",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}",
+						"closed"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "value",
+							"value": "false"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/lists/{id}/closed?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get List after unarchive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.include.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/lists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "unarchive a list again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"List created successfully\", function () {\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.closed).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"});\r",
+							"pm.test(\"List name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newlist\");\r",
+							"});\r",
+							"pm.test(\"List color is correct\", function () {\r",
+							"    pm.expect(response.color).to.eql(\"green\");\r",
+							"});\r",
+							"pm.test(\"all fields are there\", function () {\r",
+							"     pm.expect(response).to.have.include.keys('id', 'name', 'closed', 'color', 'idBoard','pos');\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"Validate response properties\", function () {\r",
+							"\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.color).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.type).to.satisfy(val => val === null || typeof val === 'string');\r",
+							"    pm.expect(response.datasource).to.be.an('object');\r",
+							"    pm.expect(response.datasource.filter).to.be.a('boolean');\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"list belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"  \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists/{{List id}}/closed?key={{key}}&token={{token}}&value=false",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						"{{List id}}",
+						"closed"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "value",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Card with too much description",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let body = pm.response.text();\r",
+							"let contentType = pm.response.headers.get(\"Content-Type\") || \"\";\r",
+							"\r",
+							"pm.test(\"Status code is 414\", function () {\r",
+							"    pm.response.to.have.status(414);\r",
+							"});\r",
+							"\r",
+							"// If the response is JSON\r",
+							"if (contentType.includes(\"application/json\")) {\r",
+							"    let json = pm.response.json();\r",
+							"    pm.collectionVariables.set(\"Card id\", json.id);\r",
+							"    pm.test(\"Response is JSON\", () => {\r",
+							"        pm.expect(json).to.be.an(\"object\");\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// If the response is HTML (error page from server)\r",
+							"else if (contentType.includes(\"text/html\")) {\r",
+							"   pm.test(\"Response is HTML error page\", () => {\r",
+							"    pm.expect(body.toLowerCase()).to.include(\"<html\");\r",
+							"});\r",
+							"    console.log(\"HTML Response (probably error):\", body);\r",
+							"}\r",
+							"\r",
+							"// If neither JSON nor HTML\r",
+							"else {\r",
+							"    pm.test(\"Unknown response type\", () => {\r",
+							"        pm.expect.fail(\"Unexpected response format\");\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards?idList={{List id}}&key={{key}}&token={{token}}&name=كارت&desc=يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{List id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "كارت"
+						},
+						{
+							"key": "desc",
+							"value": "يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400).يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. تهدف هذه الميزة إلى تمكين المستخدم من إضافة قائمة جديدة تحت Board محدد، مع ضمان حفظها بنجاح في قاعدة البيانات وإمكانية استرجاعها من خلال واجهات الـ API المختلفة.\nتُعد خاصية إنشاء القوائم جزءاً أساسياً من بنية التطبيق، حيث تساعد المستخدم في تنظيم مهامه وتوزيع العمل داخل الـ Board. لذلك، فإن التأكد من أن عملية إنشاء القائمة تعمل بشكل صحيح يساهم في تحسين تجربة المستخدم ورفع جودة المنتج.\n🎯 الهدف الأساسي:\nتمكين المستخدم من إنشاء قائمة جديدة مرتبطة بلوحة معينة بحيث يتم تخزينها بشكل صحيح ويمكن الحصول عليها أو تعديلها أو إدارتها لاحقاً.\n🧩 نطاق العمل (Scope):\nتنفيذ طلب POST مسؤول عن إنشاء القائمة الجديدة.\nالتحقق من صحة البيانات المرسلة في جسم الطلب (مثل الاسم ومعرّف اللوحة).\nضمان تخزين القائمة الجديدة في قاعدة البيانات بنجاح.\nالتأكد من إمكانية استرجاع القائمة باستخدام طلب GET.\nحفظ الـ ID الناتج عن عملية الإنشاء لاستخدامه في اختبارات أخرى.\nالتعامل مع الأخطاء الناتجة عن نقص أو خطأ في البيانات.\nإجراء اختبار يدوي وآلي للتأكد من عمل الخاصية من البداية للنهاية (E2E).\n📌 متطلبات الوظيفة (Functional Requirements):\nيجب أن يتمكّن المستخدم من إرسال طلب POST يحتوي على بيانات صحيحة لإنشاء القائمة.\nيجب أن يكون الـ Response يحتوي على كود الحالة 200 وبيانات القائمة الجديدة.\nيجب أن يحتوي الرد على معرّف فريد (ID) يتم توليده تلقائياً.\nيجب أن يكون اسم القائمة مطابقاً للاسم المُرسل في الطلب.\nيجب ربط القائمة بالـ Board الصحيح.\nيجب أن تظهر القائمة الجديدة عند تنفيذ طلب GET للقوائم.\nفي حال وجود بيانات ناقصة أو خاطئة يجب إرجاع رسالة خطأ مناسبة وكود حالة صحيح (مثل 400)."
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/cards?idList=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checklist before card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid value for idCard\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists?idCard={{Card id}}&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists"
+					],
+					"query": [
+						{
+							"key": "idCard",
+							"value": "{{Card id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Card with no name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Card id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that card was created\r",
+							"pm.test(\"Card created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idList).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate card name\r",
+							"pm.test(\"Card name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"// Validate description exists\r",
+							"pm.test(\"Card description is not empty\", function () {\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.desc.length).to.be.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('desc');\r",
+							"    pm.expect(response).to.have.property('closed');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idList');\r",
+							"    pm.expect(response).to.have.property('url');\r",
+							"    pm.expect(response).to.have.property('shortUrl');\r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idList).to.be.a('string');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"\r",
+							"    pm.expect(response.badges).to.be.an('object');\r",
+							"    pm.expect(response.checkItemStates).to.be.an('array');\r",
+							"    pm.expect(response.labels).to.be.an('array');\r",
+							"    pm.expect(response.idMembers).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"// Validate badges object\r",
+							"pm.test(\"Badges object validation\", function () {\r",
+							"    pm.expect(response.badges).to.have.property('attachments');\r",
+							"    pm.expect(response.badges.attachments).to.be.a('number');\r",
+							"});\r",
+							"pm.test(\"Card belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Card belongs to the correct list\", function () {\r",
+							"    pm.expect(response.idList).to.eql(pm.collectionVariables.get(\"List id\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards?idList={{List id}}&key={{key}}&token={{token}}&name=&desc=يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. ",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{List id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": ""
+						},
+						{
+							"key": "desc",
+							"value": "يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. "
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/cards?idList=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Card id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that card was created\r",
+							"pm.test(\"Card created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idList).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate card name\r",
+							"pm.test(\"Card name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"كارت\");\r",
+							"});\r",
+							"\r",
+							"// Validate description exists\r",
+							"pm.test(\"Card description is not empty\", function () {\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.desc.length).to.be.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('desc');\r",
+							"    pm.expect(response).to.have.property('closed');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idList');\r",
+							"    pm.expect(response).to.have.property('url');\r",
+							"    pm.expect(response).to.have.property('shortUrl');\r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idList).to.be.a('string');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"\r",
+							"    pm.expect(response.badges).to.be.an('object');\r",
+							"    pm.expect(response.checkItemStates).to.be.an('array');\r",
+							"    pm.expect(response.labels).to.be.an('array');\r",
+							"    pm.expect(response.idMembers).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"// Validate badges object\r",
+							"pm.test(\"Badges object validation\", function () {\r",
+							"    pm.expect(response.badges).to.have.property('attachments');\r",
+							"    pm.expect(response.badges.attachments).to.be.a('number');\r",
+							"});\r",
+							"pm.test(\"Card belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Card belongs to the correct List\", function () {\r",
+							"    pm.expect(response.idList).to.eql(pm.collectionVariables.get(\"List id\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards?idList={{List id}}&key={{key}}&token={{token}}&name=كارت&desc=يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. ",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{List id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "كارت"
+						},
+						{
+							"key": "desc",
+							"value": "يتناول هذا الكارت عملية تطوير وتنفيذ واختبار خاصية إنشاء قائمة جديدة داخل التطبيق. "
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that card was created\r",
+							"pm.test(\"Card created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idList).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate card name\r",
+							"pm.test(\"Card name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"كارت\");\r",
+							"});\r",
+							"\r",
+							"// Validate description exists\r",
+							"pm.test(\"Card description is not empty\", function () {\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.desc.length).to.be.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('desc');\r",
+							"    pm.expect(response).to.have.property('closed');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idList');\r",
+							"    pm.expect(response).to.have.property('url');\r",
+							"    pm.expect(response).to.have.property('shortUrl');\r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idList).to.be.a('string');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"\r",
+							"    pm.expect(response.badges).to.be.an('object');\r",
+							"    pm.expect(response.checkItemStates).to.be.an('array');\r",
+							"    pm.expect(response.labels).to.be.an('array');\r",
+							"    pm.expect(response.idMembers).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"// Validate badges object\r",
+							"pm.test(\"Badges object validation\", function () {\r",
+							"    pm.expect(response.badges).to.have.property('attachments');\r",
+							"    pm.expect(response.badges.attachments).to.be.a('number');\r",
+							"});\r",
+							"pm.test(\"Card belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Card belongs to the correct list\", function () {\r",
+							"    pm.expect(response.idList).to.eql(pm.collectionVariables.get(\"List id\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards/{{Card id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{Card id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/cards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json(); \r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate that card was created\r",
+							"pm.test(\"Card created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idList).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate card name\r",
+							"pm.test(\"Card name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newcard\");\r",
+							"});\r",
+							"\r",
+							"// Validate description exists\r",
+							"pm.test(\"Card description is not empty\", function () {\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.desc.length).to.be.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('desc');\r",
+							"    pm.expect(response).to.have.property('closed');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idList');\r",
+							"    pm.expect(response).to.have.property('url');\r",
+							"    pm.expect(response).to.have.property('shortUrl');\r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idList).to.be.a('string');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"\r",
+							"    pm.expect(response.badges).to.be.an('object');\r",
+							"    pm.expect(response.checkItemStates).to.be.an('array');\r",
+							"    pm.expect(response.labels).to.be.an('array');\r",
+							"    pm.expect(response.idMembers).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"// Validate badges object\r",
+							"pm.test(\"Badges object validation\", function () {\r",
+							"    pm.expect(response.badges).to.have.property('attachments');\r",
+							"    pm.expect(response.badges.attachments).to.be.a('number');\r",
+							"});\r",
+							"pm.test(\"Card belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Card belongs to the correct List\", function () {\r",
+							"    pm.expect(response.idList).to.eql(pm.collectionVariables.get(\"List id\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards/{{Card id}}?key={{key}}&token={{token}}&name=newcard&desc=we are making a new project",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{Card id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "newcard"
+						},
+						{
+							"key": "desc",
+							"value": "we are making a new project"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/cards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Card after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json(); \r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that card was created\r",
+							"pm.test(\"Card created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idList).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate card name\r",
+							"pm.test(\"Card name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newcard\");\r",
+							"});\r",
+							"\r",
+							"// Validate description exists\r",
+							"pm.test(\"Card description is not empty\", function () {\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.desc.length).to.be.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('desc');\r",
+							"    pm.expect(response).to.have.property('closed');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idList');\r",
+							"    pm.expect(response).to.have.property('url');\r",
+							"    pm.expect(response).to.have.property('shortUrl');\r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.desc).to.be.a('string');\r",
+							"    pm.expect(response.closed).to.be.a('boolean');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idList).to.be.a('string');\r",
+							"    pm.expect(response.url).to.be.a('string');\r",
+							"    pm.expect(response.shortUrl).to.be.a('string');\r",
+							"\r",
+							"    pm.expect(response.badges).to.be.an('object');\r",
+							"    pm.expect(response.checkItemStates).to.be.an('array');\r",
+							"    pm.expect(response.labels).to.be.an('array');\r",
+							"    pm.expect(response.idMembers).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"// Validate badges object\r",
+							"pm.test(\"Badges object validation\", function () {\r",
+							"    pm.expect(response.badges).to.have.property('attachments');\r",
+							"    pm.expect(response.badges.attachments).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Card belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Card belongs to the correct List\", function () {\r",
+							"    pm.expect(response.idList).to.eql(pm.collectionVariables.get(\"List id\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards/{{Card id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{Card id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/cards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checkitem before Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid id\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/null/checkItems?name=item1&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"null",
+						"checkItems"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "item1"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Checklist id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate that Checklist was created\r",
+							"pm.test(\"Checklist created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idCard).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate Checklist name\r",
+							"pm.test(\"Checklist name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"Checklist\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idCard');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('checkItems');\r",
+							"    pm.expect(response).to.have.property('limits');\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idCard).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.checkItems).to.be.an('array');\r",
+							"    pm.expect(response.limits).to.be.an('object');\r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"Checklist belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checklist belongs to the correct card\", function () {\r",
+							"    pm.expect(response.idCard).to.eql(pm.collectionVariables.get(\"Card id\"));\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists?idCard={{Card id}}&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists"
+					],
+					"query": [
+						{
+							"key": "idCard",
+							"value": "{{Card id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/checklists?idCard=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate that Checklist was created\r",
+							"pm.test(\"Checklist created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idCard).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Checklist card name\r",
+							"pm.test(\"Checklist name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"Checklist\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idCard');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('checkItems');\r",
+							"    \r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idCard).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.checkItems).to.be.an('array');\r",
+							"    \r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"Checklist belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checklist belongs to the correct card\", function () {\r",
+							"    pm.expect(response.idCard).to.eql(pm.collectionVariables.get(\"Card id\"));\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/checklists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Update checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate that Checklist was created\r",
+							"pm.test(\"Checklist created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idCard).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate Checklist name\r",
+							"pm.test(\"Checklist name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newchecklist\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idCard');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('checkItems');\r",
+							"   \r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idCard).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.checkItems).to.be.an('array');\r",
+							"  \r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"Checklist belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checklist belongs to the correct card\", function () {\r",
+							"    pm.expect(response.idCard).to.eql(pm.collectionVariables.get(\"Card id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}?key={{key}}&token={{token}}&name=newchecklist",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "newchecklist"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/checklists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Checklist after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Checklist id\", response.id);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that Checklist was created\r",
+							"pm.test(\"Checklist created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idBoard).to.exist;\r",
+							"    pm.expect(response.idCard).to.exist;\r",
+							"});\r",
+							"\r",
+							"// Validate Checklist name\r",
+							"pm.test(\"Checklist name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"newchecklist\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('idBoard');\r",
+							"    pm.expect(response).to.have.property('idCard');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('checkItems');\r",
+							"   \r",
+							"  \r",
+							"});\r",
+							"\r",
+							"// Data types validation\r",
+							"pm.test(\"Validate response data types\", function () {\r",
+							"\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.idCard).to.be.a('string');\r",
+							"    pm.expect(response.idBoard).to.be.a('string');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.checkItems).to.be.an('array');\r",
+							"  \r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.test(\"Checklist belongs to the correct board\", function () {\r",
+							"    pm.expect(response.idBoard).to.eql(pm.collectionVariables.get(\"Board id\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checklist belongs to the correct card\", function () {\r",
+							"    pm.expect(response.idCard).to.eql(pm.collectionVariables.get(\"Card id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/checklists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checkitem on Checklist without name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid value for name\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems?name=&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": ""
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checkitem on Checklist with emoji as a name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"checklistitem id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that Checklistitem was created\r",
+							"pm.test(\"Checklistitem created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idChecklist).to.exist;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Validate Checklistitem name\r",
+							"pm.test(\"Checklistitem name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"😂😂\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('nameData');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('state');\r",
+							"    pm.expect(response).to.have.property('due');\r",
+							"    pm.expect(response).to.have.property('dueReminder');\r",
+							"    pm.expect(response).to.have.property('idMember');\r",
+							"    pm.expect(response).to.have.property('idChecklist');\r",
+							"    pm.expect(response).to.have.property('limits');\r",
+							"});\r",
+							"\r",
+							"// Validate types\r",
+							"pm.test(\"Validate data types\", function () {\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.nameData).to.be.an('object');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.state).to.be.a('string');\r",
+							"    pm.expect(response.idChecklist).to.be.a('string');\r",
+							"    pm.expect(response.limits).to.be.an('object');\r",
+							"});\r",
+							"pm.test(\"Checklist item belongs to the correct Checklist\", function () {\r",
+							"    pm.expect(response.idChecklist).to.eql(pm.collectionVariables.get(\"Checklist id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems?name=😂😂&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "😂😂"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checkitem on Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"checklistitem id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that Checklistitem was created\r",
+							"pm.test(\"Checklistitem created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idChecklist).to.exist;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Validate Checklistitem name\r",
+							"pm.test(\"Checklistitem name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"item1\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('nameData');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('state');\r",
+							"    pm.expect(response).to.have.property('due');\r",
+							"    pm.expect(response).to.have.property('dueReminder');\r",
+							"    pm.expect(response).to.have.property('idMember');\r",
+							"    pm.expect(response).to.have.property('idChecklist');\r",
+							"    pm.expect(response).to.have.property('limits');\r",
+							"});\r",
+							"\r",
+							"// Validate types\r",
+							"pm.test(\"Validate data types\", function () {\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.nameData).to.be.an('object');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.state).to.be.a('string');\r",
+							"    pm.expect(response.idChecklist).to.be.a('string');\r",
+							"    pm.expect(response.limits).to.be.an('object');\r",
+							"});\r",
+							"pm.test(\"Checklist item belongs to the correct Checklist\", function () {\r",
+							"    pm.expect(response.idChecklist).to.eql(pm.collectionVariables.get(\"Checklist id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems?name=item1&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "item1"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/checklists/{id}/checkItems?name={name}&key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Checkitem on a Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"checklistitem id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that Checklistitem was created\r",
+							"pm.test(\"Checklistitem created successfully\", function () {\r",
+							"    pm.expect(response.id).to.exist;\r",
+							"    pm.expect(response.name).to.exist;\r",
+							"    pm.expect(response.idChecklist).to.exist;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Validate Checklistitem name\r",
+							"pm.test(\"Checklistitem name is correct\", function () {\r",
+							"    pm.expect(response.name).to.eql(\"item1\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// Validate main fields exist\r",
+							"pm.test(\"All required fields exist\", function () {\r",
+							"    pm.expect(response).to.have.property('id');\r",
+							"    pm.expect(response).to.have.property('name');\r",
+							"    pm.expect(response).to.have.property('nameData');\r",
+							"    pm.expect(response).to.have.property('pos');\r",
+							"    pm.expect(response).to.have.property('state');\r",
+							"    pm.expect(response).to.have.property('due');\r",
+							"    pm.expect(response).to.have.property('dueReminder');\r",
+							"    pm.expect(response).to.have.property('idMember');\r",
+							"    pm.expect(response).to.have.property('idChecklist');\r",
+							"   \r",
+							"});\r",
+							"\r",
+							"// Validate types\r",
+							"pm.test(\"Validate data types\", function () {\r",
+							"    pm.expect(response.id).to.be.a('string');\r",
+							"    pm.expect(response.name).to.be.a('string');\r",
+							"    pm.expect(response.nameData).to.be.an('object');\r",
+							"    pm.expect(response.pos).to.be.a('number');\r",
+							"    pm.expect(response.state).to.be.a('string');\r",
+							"    pm.expect(response.idChecklist).to.be.a('string');\r",
+							" \r",
+							"});\r",
+							"pm.test(\"Checklist item belongs to the correct Checklist\", function () {\r",
+							"    pm.expect(response.idChecklist).to.eql(pm.collectionVariables.get(\"Checklist id\"));\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems/{{checklistitem id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems",
+						"{{checklistitem id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/checklists/{id}/checkItems/{idCheckItem}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Checkitem from Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var response = pm.response.json(); // Parse the response body as JSON\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Validate that Checklistitem was deleted\r",
+							"pm.test(\"Checklistitem deleted successfully\", function () {\r",
+							"    pm.expect(response.limits).to.exist;\r",
+							"   \r",
+							"    \r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"   \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems/{{checklistitem id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems",
+						"{{checklistitem id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request DELETE \\\r\n  --url 'https://api.trello.com/1/checklists/{id}/checkItems/{idCheckItem}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Checkitem on a Checklist after deleting it",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							"//check response body for invalid check item message\r",
+							"pm.test(\"Response body contains 'invalid check item'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('model not found');\r",
+							"    });\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems/{{checklistitem id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems",
+						"{{checklistitem id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/checklists/{id}/checkItems/{idCheckItem}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "check Checkitem canot be deleted again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"//check response body for invalid check item message\r",
+							"pm.test(\"Response body contains 'invalid check item'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('invalid check item');\r",
+							"    });\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"   \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems/{{checklistitem id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems",
+						"{{checklistitem id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request DELETE \\\r\n  --url 'https://api.trello.com/1/checklists/{id}/checkItems/{idCheckItem}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var response = pm.response.json(); // Parse the response body as JSON\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that Checklist was deleted\r",
+							"pm.test(\"Checklist deleted successfully\", function () {\r",
+							"    pm.expect(response.limits).to.exist;\r",
+							"   \r",
+							"    \r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"   \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request DELETE \\\r\n  --url 'https://api.trello.com/1/checklists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checkitem after deleting checklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"The requested resource was not found.\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}/checkItems?name=item1&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}",
+						"checkItems"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "item1"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Checklist after deleting it",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							"//check response body for invalid check item message\r",
+							"pm.test(\"Response body contains 'invalid check item'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('The requested resource was not found.');\r",
+							"    });\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists/{{Checklist id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists",
+						"{{Checklist id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/checklists/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete A Card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var response = pm.response.json(); // Parse the response body as JSON\r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Validate that Card was deleted\r",
+							"pm.test(\"Card deleted successfully\", function () {\r",
+							"    pm.expect(response.limits).to.exist;\r",
+							"   \r",
+							"    \r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"   \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards/{{Card id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{Card id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request DELETE \\\r\n  --url 'https://api.trello.com/1/cards/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Checklist after deleting card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"unauthorized board requested\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/checklists?idCard={{Card id}}&key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"checklists"
+					],
+					"query": [
+						{
+							"key": "idCard",
+							"value": "{{Card id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Card after deleting it",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"//check response body for invalid check item message\r",
+							"pm.test(\"Response body contains 'invalid check item'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('The requested resource was not found.');\r",
+							"    });\r",
+							"    pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/cards/{{Card id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{Card id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/cards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Board",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var response = pm.response.json(); \r",
+							"\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Validate that Board was deleted\r",
+							"pm.test(\"Board deleted successfully\", function () {\r",
+							"    pm.expect(response._value).to.be.null;\r",
+							"   \r",
+							"    \r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"   \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/{{Board id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{Board id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request DELETE \\\r\n  --url 'https://api.trello.com/1/boards/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Board after delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							"//check response body for invalid check item message\r",
+							"pm.test(\"Response body contains 'invalid check item'\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('The requested resource was not found.');\r",
+							"    });\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/{{Board id}}?key={{key}}&token={{token}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{Board id}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request GET \\\r\n  --url 'https://api.trello.com/1/boards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create List after deleting the board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"unauthorized board list requested\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/lists?name=my list&idBoard={{Board id}}&key={{key}}&token={{token}}&color=green",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "my list"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{Board id}}"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "color",
+							"value": "green"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create board without key & token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"pm.test(\"message is correct\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"missing scopes\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/?name=ITI&key=&token=&desc=we are making boards for our Iti project",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "ITI"
+						},
+						{
+							"key": "key",
+							"value": ""
+						},
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "desc",
+							"value": "we are making boards for our Iti project"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create board without key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"pm.test(\"Error message is correct\", () => {\r",
+							"    const text = pm.response.text();\r",
+							"    pm.expect(text).to.include(\"invalid key\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is not JSON\", () => {\r",
+							"    pm.expect(() => pm.response.json()).to.throw();\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/?name=ITI&key=&token={{token}}&desc=we are making boards for our Iti project",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "ITI"
+						},
+						{
+							"key": "key",
+							"value": ""
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "desc",
+							"value": "we are making boards for our Iti project"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create board without token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.test(\"Response is JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"pm.test(\"message is correct\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"missing scopes\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/1/boards/?name=ITI&key={{key}}&token=&desc=we are making boards for our Iti project",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "ITI"
+						},
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "desc",
+							"value": "we are making boards for our Iti project"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"\r",
+					"pm.test(\"Response time is less than 2000\", function () {\r",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+					"});\r",
+					"  \r",
+					"\r",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Board id",
+			"value": ""
+		},
+		{
+			"key": "key",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "BaseUrl",
+			"value": ""
+		},
+		{
+			"key": "List id",
+			"value": ""
+		},
+		{
+			"key": "Card id",
+			"value": ""
+		},
+		{
+			"key": "Checklist id",
+			"value": ""
+		},
+		{
+			"key": "checklistitem id",
+			"value": ""
+		}
+	]
+}

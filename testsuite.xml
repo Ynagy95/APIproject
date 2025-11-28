@@ -1,0 +1,8 @@
+<suite name="Full Regression Suite" verbose="1">
+    <test name="E2E Tests">
+         <classes>
+            <class name="proj.system.E2ETests">
+            </class>
+        </classes>
+    </test>
+</suite>
